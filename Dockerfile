@@ -1,5 +1,5 @@
 FROM https://dockerregistry-v2.vih.infineon.com/icp/filebeat:7.11.0
-COPY filebeat.yml usrsharefilebeatfilebeat.yml
+COPY filebeat.yml /usr/share/filebeat/filebeat.yml
 USER root
-RUN chown rootfilebeat usrsharefilebeatfilebeat.yml
+RUN chown root:filebeat /usr/share/filebeat/filebeat.yml
 USER filebeat
