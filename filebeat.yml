@@ -14,5 +14,4 @@ output.elasticsearch:
 filebeat.inputs:
 - type: log
   paths:
-    - /var/log/messages
-    - /var/log/*.log
+    - /var/log/data
