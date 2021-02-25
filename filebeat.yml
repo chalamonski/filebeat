@@ -10,3 +10,9 @@ output.elasticsearch:
   hosts: '${ELASTICSEARCH_HOSTS:elasticsearch:9200}'
   username: 'user1'
   password: 'pass1'
+  
+filebeat.inputs:
+- type: log
+  paths:
+    - /var/log/messages
+    - /var/log/*.log
