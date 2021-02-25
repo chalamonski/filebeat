@@ -1,0 +1,69 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  creationTimestamp: '2021-02-25T11:11:40Z'
+  generation: 3
+  name: primarycontainerdc
+  namespace: kuba-test
+  resourceVersion: '780847020'
+  selfLink: >-
+    /apis/apps.openshift.io/v1/namespaces/kuba-test/deploymentconfigs/primarycontainerdc
+  uid: 3c5f0d41-775a-11eb-8626-0050568f0885
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    name: primarycontainerdc
+  strategy:
+    activeDeadlineSeconds: 21600
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: Rolling
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        name: primarycontainerdc
+    spec:
+      containers:
+        - args:
+            - /bin/sh
+            - '-c'
+            - >-
+              i=0; while true; do echo "hello world" >>
+              /var/log/data/fileName.log; i=$((i+1)); sleep 1; done
+          image: 'busybox:latest'
+          imagePullPolicy: Always
+          name: primarycontainer
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /var/log/data
+              name: varlog
+        - image: 'docker-registry.default.svc:5000/kuba-test/filebeat-docker'
+          imagePullPolicy: Always
+          name: filebeat-sidecar
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /var/log/data
+              name: varlog
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - emptyDir: {}
+          name: varlog
+  test: false
+  triggers:
+    - type: ConfigChange
+
